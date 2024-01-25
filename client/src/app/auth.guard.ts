@@ -16,17 +16,21 @@ export class AuthGuard implements CanActivate {
       return this.authService.isLoggedIn$().pipe(
         map((isLoggedIn) => {
           if (isLoggedIn) {
-            console.log({isLoggedIn})
-            return true;
-          } else {
-            // TODO should not make this decision here, maybe just redirect to root?
-            console.log({isLoggedIn})
-            this.router.navigate(['/sign-in']);
-            return false;
+            if(state.url === '/sign-in') {
+              this.router.navigate(['/home']);
+              return false;
+            } else {
+              return true;
+            }
+          } else {  // Logged-out user
+            if (state.url !== '/sign-in') {
+              this.router.navigate(['/sign-in']);
+              return false;
+            } else {
+              return true;
+            }
           }
         })
       );
-
   }
-  
 }
