@@ -8,11 +8,14 @@ export class AuthService {
   private loginStatusSubject = new BehaviorSubject<boolean>(false);
   loginStatus$ = this.loginStatusSubject.asObservable();
 
+  loginPayload?: any;
+
   constructor() {
     this.loginStatus$.subscribe();
   }
 
-  signIn() {
+  signIn(loginPayload: any) {
+    this.loginPayload = loginPayload;
     // Perform login logic
 
     // Notify subscribers about the login status change
