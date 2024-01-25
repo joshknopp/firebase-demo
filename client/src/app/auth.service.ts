@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { getAuth, signOut } from 'firebase/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -7,7 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class AuthService {
   private loginStatusSubject = new BehaviorSubject<boolean>(false);
   loginStatus$ = this.loginStatusSubject.asObservable();
-  
+
   private storageKey = 'authUser';
 
   loginPayload?: any;
@@ -24,12 +25,12 @@ export class AuthService {
   }
 
   signOut() {
+    signOut(getAuth());
     this.loginPayload = undefined;
     this.loginStatusSubject.next(false);
     this.removeUserFromStorage();
   }
 
-  // Retrieve user from storage
   private retrieveUserFromStorage() {
     const storedUser = localStorage.getItem(this.storageKey);
     if (storedUser) {
@@ -38,20 +39,21 @@ export class AuthService {
     }
   }
 
-  // Save user to storage
   private saveUserToStorage() {
     if (this.loginPayload) {
       localStorage.setItem(this.storageKey, JSON.stringify(this.loginPayload));
     }
   }
 
-  // Remove user from storage
   private removeUserFromStorage() {
     localStorage.removeItem(this.storageKey);
   }
 
-  // TODO solve for cross-session persistence
   isLoggedIn$(): Observable<boolean> {
     return this.loginStatus$;
+  }
+
+  getAuthPayload(): any {
+    return this.loginPayload;
   }
 }

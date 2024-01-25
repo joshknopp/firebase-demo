@@ -8,6 +8,7 @@ import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth.service';
 
+// TODO Move some of this to service and change flow? Want to also ensure getAuth is singleton - it SHOULD be already...
 const firebaseConfig = environment.firebaseConfig;
 
 const app = initializeApp(firebaseConfig);
