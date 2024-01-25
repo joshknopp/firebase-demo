@@ -5,6 +5,8 @@ import * as firebaseui from 'firebaseui';
 
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 const firebaseConfig = environment.firebaseConfig;
 
@@ -18,6 +20,13 @@ const ui = new firebaseui.auth.AuthUI(getAuth());
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+  constructor(private authService: AuthService, private router: Router) {}
+
+  fakeSignIn() {
+    this.authService.signIn();
+    this.router.navigate(['/']);  // TODO Should nav actions like this be in response to an observable, governed elsewhere?
+  }
+
   ngOnInit(): void {
     const uiConfig = {
       callbacks: {
@@ -50,15 +59,5 @@ export class SignInComponent implements OnInit {
     };
 
     ui.start('#firebaseui-auth-container', uiConfig);
-  }
-
-  async signInWithGoogle(): Promise<User | undefined> {
-    try {
-      const result: UserCredential = await signInWithPopup(getAuth(), new GoogleAuthProvider());
-      return result.user;
-    } catch(error) {
-      console.error('Sign-in error:', error);
-    }
-    return undefined;
   }
 }
