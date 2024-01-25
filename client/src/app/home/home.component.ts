@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { RemoteService } from '../remote.service';
 
 @Component({
   selector: 'app-home',
@@ -10,10 +11,17 @@ import { AuthService } from '../auth.service';
 export class HomeComponent implements OnInit {
   authPayload: any;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private remoteService: RemoteService
+  ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.authPayload = this.authService.getAuthPayload();
+    console.log(`ping result: `, await this.remoteService.ping());
+    console.log(`makePrivateApiRequest result: `, await this.remoteService.makePrivateApiRequest());
+    
   }
 
   signOut() {

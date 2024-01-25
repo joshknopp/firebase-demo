@@ -30,8 +30,11 @@ export class SignInComponent implements OnInit {
       callbacks: {
         signInSuccessWithAuthResult: function(authResult: any, redirectUrl: string) {
           console.log(`signInSuccessWithAuthResult`, authResult, redirectUrl);
-          authService.signIn(authResult);
-          return true;
+          authService.signIn(authResult).then(() => {
+            console.log(`done signIn`)
+            router.navigate(['home']);
+          });
+          return false;
         },
         uiShown: function() {
           console.log(`Sign in widget is ready`);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAuth, signOut } from 'firebase/auth';
+import { User, getAuth, signOut } from 'firebase/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -10,18 +10,26 @@ export class AuthService {
   loginStatus$ = this.loginStatusSubject.asObservable();
 
   private storageKey = 'authUser';
+  private storageKeyForToken = 'authUserToken';
 
   loginPayload?: any;
+
+  private firebaseToken?: string;
 
   constructor() {
     this.retrieveUserFromStorage();
     this.loginStatus$.subscribe();
   }
 
-  signIn(loginPayload: any) {
+  async signIn(loginPayload: any) {
     this.loginPayload = loginPayload;
     this.loginStatusSubject.next(true);
     this.saveUserToStorage();
+    this.firebaseToken = await getAuth().currentUser?.getIdToken();
+    console.log(`on signIn`, this.firebaseToken, this.loginPayload);
+    if(this.firebaseToken) {
+      localStorage.setItem(this.storageKeyForToken, this.firebaseToken);
+    }
   }
 
   signOut() {
@@ -29,6 +37,8 @@ export class AuthService {
     this.loginPayload = undefined;
     this.loginStatusSubject.next(false);
     this.removeUserFromStorage();
+    this.firebaseToken = undefined;
+    localStorage.removeItem(this.storageKeyForToken);
   }
 
   private retrieveUserFromStorage() {
@@ -36,6 +46,7 @@ export class AuthService {
     if (storedUser) {
       this.loginPayload = JSON.parse(storedUser);
       this.loginStatusSubject.next(true);
+      this.firebaseToken = localStorage.getItem(this.storageKeyForToken) ?? undefined;
     }
   }
 
@@ -55,5 +66,9 @@ export class AuthService {
 
   getAuthPayload(): any {
     return this.loginPayload;
+  }
+
+  async getFirebaseToken(): Promise<string | undefined> {
+    return this.firebaseToken;
   }
 }
