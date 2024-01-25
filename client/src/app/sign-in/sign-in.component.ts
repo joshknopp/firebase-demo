@@ -31,23 +31,19 @@ export class SignInComponent implements OnInit {
         signInSuccessWithAuthResult: function(authResult: any, redirectUrl: string) {
           console.log(`signInSuccessWithAuthResult`, authResult, redirectUrl);
           authService.signIn(authResult);
-          router.navigate(['home']);
-          // False means we handle redirect
-          return false;
+          return true;
         },
         uiShown: function() {
-          console.log(`uiShown Sign in widget is ready`);
+          console.log(`Sign in widget is ready`);
         }
       },
-      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-      signInFlow: 'popup',
-      signInSuccessUrl: '/home',  // Probably does nothing since we handle redirect
+      signInSuccessUrl: '/home',
       signInOptions: [
         EmailAuthProvider.PROVIDER_ID,
         //EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
         GoogleAuthProvider.PROVIDER_ID,
         FacebookAuthProvider.PROVIDER_ID,
-        TwitterAuthProvider.PROVIDER_ID
+        //TwitterAuthProvider.PROVIDER_ID
       ],
       // tosUrl: '<your-tos-url>',
       // privacyPolicyUrl: '<your-privacy-policy-url>'
