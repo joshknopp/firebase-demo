@@ -135,3 +135,4 @@ environment.ts
 environment.prod.ts
 
 serviceAccountKey.json
+.env.production

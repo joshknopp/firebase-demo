@@ -13,7 +13,7 @@ export class RemoteService {
 
   async ping() {
     try {
-      const response = await firstValueFrom(this.http.get<string>(`${environment.apiUrl}/hello/ping`));
+      const response = await firstValueFrom(this.http.get<string>(`${environment.apiUrl}/health`));
       return response;
     } catch (error) {
       console.error(error);
@@ -22,20 +22,8 @@ export class RemoteService {
   }
 
   async makePrivateApiRequest(): Promise<void> {
-    try {
-      const token = await this.authService.getFirebaseToken();
-      if(!token) throw new Error(`No auth token`);
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-      };
-      console.log(token);
-      const response = await firstValueFrom(this.http.get<string>(`${environment.apiUrl}/secure`, { headers, withCredentials: true }));
-      
-      // Handle the response as needed
-      console.log('Private API Response:', response);
-    } catch (error) {
-      // Handle errors, e.g., unauthorized access
-      console.error('Error making private API request:', error);
-    }
+    const token: string | undefined = await this.authService.getFirebaseToken();
+    const response = await firstValueFrom(this.http.get<any>(`${environment.apiUrl}/secure`));
+    console.log('Private API Response:', response);
   }
 }

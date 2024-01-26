@@ -6,23 +6,18 @@ const helloApi = api('main', {
   middleware: [cors],
 });
 
-helloApi.get("/hello/:name", async (ctx) => {
-    const { name } = ctx.req.params;
-
+helloApi.get("/health", async (ctx) => {
     ctx.res.status = 200;
-    ctx.res.json(`Hello ${name}`);
+    ctx.res.json(`ack`);
 
     return ctx;
 });
 
-var admin = require("firebase-admin");
-
-var serviceAccount = require("../serviceAccountKey.json");
-
+const admin = require("firebase-admin");
+const serviceAccount = require("../serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-
 
 helloApi.get("/secure", async (ctx) => {
     const authorizationHeader = ctx.req.headers.authorization;
@@ -47,7 +42,7 @@ helloApi.get("/secure", async (ctx) => {
     } catch (error) {
         // If verification fails, return a 403 error
         ctx.res.status = 403;
-        ctx.res.json('Unauthorized no token');
+        ctx.res.json(error);
     }
 
     return ctx;
