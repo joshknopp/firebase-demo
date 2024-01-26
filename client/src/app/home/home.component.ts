@@ -17,8 +17,11 @@ export class HomeComponent implements OnInit {
     private remoteService: RemoteService
   ) { }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.authPayload = this.authService.getAuthPayload();
+  }
+
+  async test() {
     console.log(`makePrivateApiRequest result: `, await this.remoteService.makePrivateApiRequest());
   }
 

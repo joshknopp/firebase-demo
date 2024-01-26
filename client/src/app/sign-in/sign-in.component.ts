@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth.service';
+import { RemoteService } from '../remote.service';
 
 // TODO Move some of this to service and change flow? Want to also ensure getAuth is singleton - it SHOULD be already...
 const firebaseConfig = environment.firebaseConfig;
@@ -21,7 +22,7 @@ const ui = new firebaseui.auth.AuthUI(getAuth());
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private remoteService: RemoteService) {}
 
   ngOnInit(): void {
     const authService: AuthService = this.authService;
@@ -54,4 +55,9 @@ export class SignInComponent implements OnInit {
 
     ui.start('#firebaseui-auth-container', uiConfig);
   }
+  
+  async test() {
+    console.log(`makePrivateApiRequest result: `, await this.remoteService.ping());
+  }
+
 }

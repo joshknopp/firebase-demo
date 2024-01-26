@@ -42,7 +42,7 @@ helloApi.get("/secure", async (ctx) => {
     } catch (error) {
         // If verification fails, return a 403 error
         ctx.res.status = 403;
-        ctx.res.json(error);
+        ctx.res.json({error, token});
     }
 
     return ctx;
