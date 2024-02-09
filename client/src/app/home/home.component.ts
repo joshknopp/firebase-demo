@@ -21,14 +21,12 @@ export class HomeComponent implements OnInit {
     this.authPayload = this.authService.getAuthPayload();
   }
 
-  async test() {
-    console.log(`makePrivateApiRequest result: `, await this.remoteService.makePrivateApiRequest());
+  async trySecureRequest() {
+    console.log(`makeSecureApiRequest result: `, await this.remoteService.makeSecureApiRequest());
   }
 
   signOut() {
     this.authService.signOut();
     this.router.navigate(['/sign-in']);  // TODO Should nav actions like this be in response to an observable, governed elsewhere?
   }
-
-
 }

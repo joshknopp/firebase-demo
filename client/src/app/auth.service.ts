@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, getAuth, signOut } from 'firebase/auth';
+import { browserLocalPersistence, getAuth, setPersistence, signOut } from 'firebase/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -11,25 +11,34 @@ export class AuthService {
 
   private storageKey = 'authUser';
   private storageKeyForToken = 'authUserToken';
+  private storageKeyForRefreshToken: string = 'authRefreshToken';
 
   loginPayload?: any;
-
-  private firebaseToken?: string;
 
   constructor() {
     this.retrieveUserFromStorage();
     this.loginStatus$.subscribe();
+    setPersistence(getAuth(), browserLocalPersistence);
   }
 
-  async signIn(loginPayload: any) {
+  async handleSignInSuccess(loginPayload: any) {
     this.loginPayload = loginPayload;
     this.loginStatusSubject.next(true);
     this.saveUserToStorage();
-    this.firebaseToken = await getAuth().currentUser?.getIdToken();
-    console.log(`on signIn`, this.firebaseToken, this.loginPayload);
-    if(this.firebaseToken) {
-      localStorage.setItem(this.storageKeyForToken, this.firebaseToken);
+    const firebaseToken: string | undefined = await getAuth().currentUser?.getIdToken();
+    const refreshToken: string | undefined = getAuth().currentUser?.refreshToken;
+    console.log(`on signIn`, { firebaseToken, refreshToken, loginPayload: this.loginPayload });
+    if(firebaseToken) {
+      localStorage.setItem(this.storageKeyForToken, firebaseToken);
     }
+    if(refreshToken) {
+      localStorage.setItem(this.storageKeyForRefreshToken, refreshToken);
+    }
+  }
+
+  refreshAuth(refreshToken: string) {
+    // Do something like getAuth().refresh
+    
   }
 
   signOut() {
@@ -37,7 +46,6 @@ export class AuthService {
     this.loginPayload = undefined;
     this.loginStatusSubject.next(false);
     this.removeUserFromStorage();
-    this.firebaseToken = undefined;
     localStorage.removeItem(this.storageKeyForToken);
   }
 
@@ -46,7 +54,6 @@ export class AuthService {
     if (storedUser) {
       this.loginPayload = JSON.parse(storedUser);
       this.loginStatusSubject.next(true);
-      this.firebaseToken = localStorage.getItem(this.storageKeyForToken) ?? undefined;
     }
   }
 
@@ -68,7 +75,11 @@ export class AuthService {
     return this.loginPayload;
   }
 
-  async getFirebaseToken(): Promise<string | undefined> {
-    return this.firebaseToken;
+  async getLocalFirebaseToken(): Promise<string | undefined> {
+    return localStorage.getItem(this.storageKeyForToken) ?? undefined;
+  }
+
+  async getLocalRefreshToken(): Promise<string | undefined> {
+    return localStorage.getItem(this.storageKeyForRefreshToken) ?? undefined;
   }
 }

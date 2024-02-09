@@ -29,15 +29,18 @@ export class SignInComponent implements OnInit {
     const router: Router = this.router;
     const uiConfig = {
       callbacks: {
-        signInSuccessWithAuthResult: function(authResult: any, redirectUrl: string) {
+        signInSuccessWithAuthResult: function(authResult: any, redirectUrl: string): boolean {
           console.log(`signInSuccessWithAuthResult`, authResult, redirectUrl);
-          authService.signIn(authResult).then(() => {
+          authService.handleSignInSuccess(authResult).then(() => {
             console.log(`done signIn`)
             router.navigate(['home']);
           });
           return false;
         },
-        uiShown: function() {
+        signInFailure: function(error: any): void {
+          console.error(`signInFailure`, error);
+        },
+        uiShown: function(): void {
           console.log(`Sign in widget is ready`);
         }
       },
@@ -56,8 +59,13 @@ export class SignInComponent implements OnInit {
     ui.start('#firebaseui-auth-container', uiConfig);
   }
   
-  async test() {
-    console.log(`makePrivateApiRequest result: `, await this.remoteService.ping());
+  async tryPing() {
+    try {
+      console.log(`tryPing result: `, await this.remoteService.fetchHealthStatus());
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
 }

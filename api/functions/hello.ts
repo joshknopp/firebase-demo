@@ -20,6 +20,7 @@ admin.initializeApp({
 });
 
 helloApi.get("/secure", async (ctx) => {
+    
     const authorizationHeader = ctx.req.headers.authorization;
 
     if (!authorizationHeader) {
@@ -28,9 +29,11 @@ helloApi.get("/secure", async (ctx) => {
         return ctx;
     }
 
-    const token = Array.isArray(authorizationHeader)
+    const tokenString: string = Array.isArray(authorizationHeader)
         ? authorizationHeader[0]  // If it's an array, use the first element
         : authorizationHeader;    // If it's a string, use the original string
+
+    const token = tokenString.replace('Bearer ', '');
 
     try {
         // Verify the Firebase Authentication token using Firebase Admin SDK
