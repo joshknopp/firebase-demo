@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { RemoteService } from '../remote.service';
 
@@ -8,25 +7,21 @@ import { RemoteService } from '../remote.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-  authPayload: any;
-
+export class HomeComponent {
   constructor(
-    private authService: AuthService,
-    private router: Router,
+    public authService: AuthService,
     private remoteService: RemoteService
   ) { }
 
-  ngOnInit(): void {
-    this.authPayload = this.authService.getAuthPayload();
+  async tryPing() {
+    console.log(`tryPing result: `, await this.remoteService.fetchHealthStatus());
   }
 
   async trySecureRequest() {
     console.log(`makeSecureApiRequest result: `, await this.remoteService.makeSecureApiRequest());
   }
 
-  signOut() {
-    this.authService.signOut();
-    this.router.navigate(['/sign-in']);  // TODO Should nav actions like this be in response to an observable, governed elsewhere?
+  async signOut() {
+    await this.authService.signOut();
   }
 }

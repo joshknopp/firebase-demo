@@ -1,4 +1,5 @@
+<button (click)="tryPing()">tryPing()</button>
 <button (click)="trySecureRequest()">trySecureRequest()</button>
 <button (click)="signOut()">Sign Out</button>
 
-<pre>{{ authPayload | json }}</pre>
+<pre>{{ authService.user$ | async | json }}</pre>
