@@ -1,5 +1,17 @@
-<button (click)="tryPing()">tryPing()</button>
-<button (click)="trySecureRequest()">trySecureRequest()</button>
-<button (click)="signOut()">Sign Out</button>
-
-<pre>{{ authService.user$ | async | json }}</pre>
+<div class="container mt-2">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="mb-2"><button type="button" class="btn btn-primary" (click)="trySecureRequest()">Secure Request</button></div>
+            <div class="mb-2"><button type="button" class="btn btn-secondary" (click)="tryPing()">Health Check</button></div>
+            <div class="mb-2"><button type="button" class="btn btn-warning" (click)="signOut()">Sign Out</button></div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Server Response</h5>
+                  <pre class="card-text">{{ serverResponse | json }}</pre>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>

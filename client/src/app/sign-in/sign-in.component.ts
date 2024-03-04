@@ -16,8 +16,11 @@ const ui = new firebaseui.auth.AuthUI(getAuth());
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+  serverResponse: any = 'Waiting for first request';
+
   constructor(private remoteService: RemoteService) {}
 
+  // TODO After June 18, 2024, confirm this still works, else consult https://firebase.google.com/docs/auth/web/redirect-best-practices#self-host-helper-code
   ngOnInit(): void {
     const uiConfig = {
       callbacks: {
@@ -47,16 +50,14 @@ export class SignInComponent implements OnInit {
   }
   
   async tryPing() {
-    try {
-      console.log(`tryPing result: `, await this.remoteService.fetchHealthStatus());
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    this.serverResponse = await this.remoteService.fetchHealthStatus();
   }
 
   async trySecureRequest() {
-    console.log(`makeSecureApiRequest result: `, await this.remoteService.makeSecureApiRequest());
+    try {
+      this.serverResponse = await this.remoteService.makeSecureApiRequest();
+    } catch(err: any) {
+      this.serverResponse = err;
+    }
   }
-
 }

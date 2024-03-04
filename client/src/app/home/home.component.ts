@@ -8,17 +8,19 @@ import { RemoteService } from '../remote.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
+  serverResponse: any = 'Waiting for first request';
+
   constructor(
     public authService: AuthService,
     private remoteService: RemoteService
   ) { }
 
   async tryPing() {
-    console.log(`tryPing result: `, await this.remoteService.fetchHealthStatus());
+    this.serverResponse = await this.remoteService.fetchHealthStatus();
   }
 
   async trySecureRequest() {
-    console.log(`makeSecureApiRequest result: `, await this.remoteService.makeSecureApiRequest());
+    this.serverResponse = await this.remoteService.makeSecureApiRequest();
   }
 
   async signOut() {
