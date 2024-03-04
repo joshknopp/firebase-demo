@@ -1,0 +1,21 @@
+<div class="container mt-2">
+    <div class="row">
+        <div class="col">
+            <div id="firebaseui-auth-container"></div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <div class="mb-2"><button type="button" class="btn btn-primary" (click)="trySecureRequest()">Secure Request</button></div>
+            <div class="mb-2"><button type="button" class="btn btn-secondary" (click)="tryPing()">Health Check</button></div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Server Response</h5>
+                  <pre class="card-text">{{ serverResponse | json }}</pre>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
